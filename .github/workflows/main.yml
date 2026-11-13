@@ -1,0 +1,27 @@
+name: Auto Deploy to InfinityFree
+
+# Bắt sự kiện khi có người push code lên nhánh main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: Deploy via FTP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lấy code mới nhất từ GitHub
+        uses: actions/checkout@v4
+
+      - name: Đẩy code lên Hosting InfinityFree
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.REMOTE_DIR }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            README.md
